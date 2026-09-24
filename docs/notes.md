@@ -104,3 +104,22 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | Problem | Cause | Solution |
 |---------|-------|----------|
 | Risk: network interface names can change after kernel/firmware updates | Linux predictable interface naming depends on hardware/driver details | Kept "Pin network interface names" enabled → NIC stays `nic0` |
+
+## Decision: Filesystem
+| Option | Verdict | Reason |
+|--------|---------|--------|
+| ext4 + LVM-Thin | ✅ Chosen | Single SSD, low RAM overhead, Proxmox default, LVM-Thin still supports VM snapshots |
+| ZFS (RAID0, single disk) | ❌ Rejected | No redundancy/self-healing with one disk, ARC cache consumes RAM needed for VMs, higher SSD wear |
+
+## First Login & Repositories
+| Item | Value |
+|------|-------|
+| Web UI | https://192.168.2.10:8006 (self-signed certificate warning accepted) |
+| Login | root, realm Linux PAM |
+| Detected | Proxmox VE 9.2.2, 4x i5-6500, 15.5 GiB RAM, EFI Secure Boot |
+| Repositories | Disabled pve-enterprise + ceph enterprise, added pve-no-subscription (deb822 `.sources` format) |
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| "Update package database" task failed (`apt-get update` exit code 100) | Only the enterprise repositories are enabled after install; they require a paid subscription key (HTTP 401) | Disabled both enterprise repos (PVE + Ceph), added the free `pve-no-subscription` repo → refresh returns TASK OK |
+| Browser certificate warning on port 8006 | Proxmox uses a self-signed certificate by default | Accepted for the homelab; replacing it with a trusted certificate is a possible later improvement |
