@@ -67,3 +67,18 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | Problem | Cause | Solution |
 |---------|-------|----------|
 | Partition scheme / target system greyed out in Rufus | Proxmox ISO is ISOHybrid, not compatible with ISO copy mode – Rufus forces DD mode and uses the partition table embedded in the image | No action needed – the image already supports UEFI and legacy boot |
+
+## BIOS Configuration (HP Computer Setup, F10)
+| Setting | Value | Reason |
+|---------|-------|--------|
+| Virtualization Technology (VTx) | Enabled | Required for KVM virtual machines |
+| Virtualization Technology for Directed I/O (VTd) | Enabled | Enables PCI passthrough to VMs later |
+| USB Storage Boot | Enabled | Boot the Proxmox installer from USB |
+| Boot mode | UEFI only (Legacy disabled) | Modern boot path, required for Secure Boot |
+| Secure Boot | Enabled, MS UEFI CA key enabled | Proxmox boots via Microsoft-signed shim |
+| After Power Loss | Power On | Server comes back automatically after a power outage |
+| Startup Delay | 5 sec | Fast Boot with 0 sec made F9/F10 almost impossible to hit |
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Hard to enter BIOS / boot menu | Fast Boot with 0 sec startup delay | Set Startup Delay to 5 sec |
