@@ -40,3 +40,19 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 |---------|-------|----------|
 | Inline code backticks missing in notes.md | In a double-quoted here-string (`@"..."@`) the backtick is PowerShell's escape character | Use single-quoted here-strings (`@'...'@`) for Markdown content – no escaping, no variable expansion |
 | Git warning "LF will be replaced by CRLF" | Git for Windows default `core.autocrlf=true` | Added `.gitattributes` with `* text=auto eol=lf` so Linux configs keep LF endings regardless of client settings |
+
+## Network Plan
+| Item | Value |
+|------|-------|
+| Router | Telekom Speedport Smart 3 (192.168.2.1) |
+| Subnet | 192.168.2.0/24 |
+| Router DHCP range | 192.168.2.100 – 192.168.2.230 |
+| Proxmox host | pve01.home.arpa – 192.168.2.10/24 (static, outside DHCP range) |
+| Reserved: infrastructure | 192.168.2.11 – 192.168.2.19 |
+| Reserved: homelab VMs | 192.168.2.20 – 192.168.2.49 |
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| DHCP settings not visible in Speedport UI | Hidden in "Standardmodus" | Settings → Ansicht → switch to "Expertenmodus", then Netzwerk → Heimnetzwerk (LAN) → DHCP |
+| `Test-Connection` threw cryptic "PingException" | Windows PowerShell 5.1 reports an unanswered ping as an exception | Verified with classic `ping` instead |
+| `ping 192.168.2.10` answered by own client (.180) with "Destination host unreachable" | Same subnet → client sends ARP request, nobody answers | Confirms the IP is free – chosen as static Proxmox IP |
