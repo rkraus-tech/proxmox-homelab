@@ -39,3 +39,4 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | Problem | Cause | Solution |
 |---------|-------|----------|
 | Inline code backticks missing in notes.md | In a double-quoted here-string (`@"..."@`) the backtick is PowerShell's escape character | Use single-quoted here-strings (`@'...'@`) for Markdown content – no escaping, no variable expansion |
+| Git warning "LF will be replaced by CRLF" | Git for Windows default `core.autocrlf=true` | Added `.gitattributes` with `* text=auto eol=lf` so Linux configs keep LF endings regardless of client settings |

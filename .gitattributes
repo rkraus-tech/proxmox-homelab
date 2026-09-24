@@ -1,0 +1,6 @@
+# Normalize line endings: LF everywhere (Linux configs live in this repo)
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
