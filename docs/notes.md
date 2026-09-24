@@ -56,3 +56,14 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | DHCP settings not visible in Speedport UI | Hidden in "Standardmodus" | Settings → Ansicht → switch to "Expertenmodus", then Netzwerk → Heimnetzwerk (LAN) → DHCP |
 | `Test-Connection` threw cryptic "PingException" | Windows PowerShell 5.1 reports an unanswered ping as an exception | Verified with classic `ping` instead |
 | `ping 192.168.2.10` answered by own client (.180) with "Destination host unreachable" | Same subnet → client sends ARP request, nobody answers | Confirms the IP is free – chosen as static Proxmox IP |
+
+## Bootable USB
+| Item | Value |
+|------|-------|
+| Tool | Rufus 4.15 Portable |
+| Stick | 512 GB USB stick (fully wiped) |
+| Write mode | DD image mode (forced automatically by Rufus) |
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Partition scheme / target system greyed out in Rufus | Proxmox ISO is ISOHybrid, not compatible with ISO copy mode – Rufus forces DD mode and uses the partition table embedded in the image | No action needed – the image already supports UEFI and legacy boot |
