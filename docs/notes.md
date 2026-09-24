@@ -83,3 +83,24 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 |---------|-------|----------|
 | Hard to enter BIOS / boot menu | Fast Boot with 0 sec startup delay | Set Startup Delay to 5 sec |
 | Booted into preinstalled Windows setup instead of USB | Windows Boot Manager is first in the UEFI boot order, F9 was pressed too late | Powered off, tapped F9 repeatedly right after power-on, selected "USB Disk 3.0" in the boot menu |
+
+## Decision: Filesystem
+| Option | Verdict | Reason |
+|--------|---------|--------|
+| ext4 + LVM-Thin | ✅ Chosen | Single SSD, low RAM overhead, Proxmox default, LVM-Thin still supports VM snapshots |
+| ZFS (RAID0, single disk) | ❌ Rejected | No redundancy/self-healing with one disk, ARC cache consumes RAM needed for VMs, higher SSD wear |
+
+## Installation (Proxmox VE 9.2)
+| Setting | Value |
+|---------|-------|
+| Target disk | /dev/nvme0n1 – Samsung 256 GB NVMe (238.47 GiB) |
+| Filesystem | ext4, default partitioning (root / swap / LVM-Thin data) |
+| Locale | Germany, Europe/Berlin, keymap de |
+| Management interface | nic0 (Intel I219-LM, e1000e), interface name pinned |
+| Hostname | pve01.home.arpa |
+| IP / Gateway / DNS | 192.168.2.10/24 / 192.168.2.1 / 192.168.2.1 |
+| Result | First boot OK – web UI announced at https://192.168.2.10:8006 |
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Risk: network interface names can change after kernel/firmware updates | Linux predictable interface naming depends on hardware/driver details | Kept "Pin network interface names" enabled → NIC stays `nic0` |
