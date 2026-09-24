@@ -82,3 +82,4 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | Problem | Cause | Solution |
 |---------|-------|----------|
 | Hard to enter BIOS / boot menu | Fast Boot with 0 sec startup delay | Set Startup Delay to 5 sec |
+| Booted into preinstalled Windows setup instead of USB | Windows Boot Manager is first in the UEFI boot order, F9 was pressed too late | Powered off, tapped F9 repeatedly right after power-on, selected "USB Disk 3.0" in the boot menu |
