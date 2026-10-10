@@ -172,3 +172,20 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | Shared | No – only relevant for network storage in a cluster |
 | Test | Downloaded debian-13.7.0-amd64-netinst.iso via "Download from URL" with SHA-256 verification → "checksum verified", TASK OK |
 | ISO path | /var/lib/vz/template/iso/ |
+
+## Users, Permissions & 2FA
+| Item | Value |
+|------|-------|
+| Group | `admins` |
+| User | `robert@pve` (realm: Proxmox VE authentication server – exists only in Proxmox, not as a Linux user) |
+| Permission | Path `/`, group `admins`, role `Administrator`, propagate = true |
+| 2FA | TOTP (authenticator app) + recovery keys for `robert@pve` |
+| Test | Logged out and back in as `robert@pve` – TOTP prompt appeared, login successful |
+| root@pam | Kept as break-glass account, not used for daily work (no 2FA yet – possible future improvement) |
+
+| Decision | Reason |
+|----------|--------|
+| Personal admin account instead of root | Audit trail (actions logged per user), least privilege, no OS-level/SSH access via the PVE realm |
+| Permissions assigned to a group, not a user | Scales: new admins only need group membership (same idea as AGDLP in Active Directory) |
+| TOTP + recovery keys | Stolen password alone is not enough; recovery keys stored in password manager in case the phone is lost |
+| Web UI 2FA does not lock out local console | Physical console login with root still works as emergency access |
