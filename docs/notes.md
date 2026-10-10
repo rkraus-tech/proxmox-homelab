@@ -123,3 +123,30 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 |---------|-------|----------|
 | "Update package database" task failed (`apt-get update` exit code 100) | Only the enterprise repositories are enabled after install; they require a paid subscription key (HTTP 401) | Disabled both enterprise repos (PVE + Ceph), added the free `pve-no-subscription` repo → refresh returns TASK OK |
 | Browser certificate warning on port 8006 | Proxmox uses a self-signed certificate by default | Accepted for the homelab; replacing it with a trusted certificate is a possible later improvement |
+
+## System Update
+| Item | Value |
+|------|-------|
+| Method | Updates → Refresh → Upgrade (`apt dist-upgrade` in web shell) |
+| Result | System up to date, pve-manager 9.2.20 |
+| Kernel | 7.0.2-6-pve (ISO) → 7.0.14-19-pve, reboot required to activate |
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Several warnings during upgrade (ceph chown, watchdog-mux, "skipping ESP sync") | Packages for unused features (Ceph, HA cluster, ZFS boot sync) | Reviewed and classified as harmless for a single ext4 node |
+| Git command accidentally pasted into the Proxmox web shell | Wrong window focused | Discarded with Ctrl+C; lesson: always check the prompt (`PS C:\>` vs `root@pve01:~#`) before pasting |
+| Upgrade popup console (Upgrade button) unusable after abort | The upgrade console session ended; the window only showed the old prompt | Closed it and used the node shell (pve01 → Shell) instead |
+
+## Second Update Round (after 16 days uptime)
+| Item | Value |
+|------|-------|
+| Pending updates | 21 packages (OpenSSL security fixes, pve-manager 9.2.21, new kernel 7.0.14-23) |
+| Method | `apt full-upgrade` in node shell, cached packages reused (0 B download) |
+| Kernels installed | 7.0.14-23 (default), 7.0.14-19, 7.0.2-6 (fallbacks in GRUB) |
+| Lesson | Check for new updates before a planned reboot → one reboot instead of two |
+
+## Additional Problems & Solutions (Update Round 2)
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| New kernel not active after upgrade (still 7.0.2-6-pve after 15 days uptime) | Reboot after the kernel update was never performed – a new kernel only loads on boot | Ran pending updates again, then rebooted once to activate the latest kernel |
+| Upgrade aborted after download (`^C` in console) | Ctrl+C sends SIGINT and cancels apt before packages are unpacked | Ran `dpkg --configure -a` (consistency check), then `apt full-upgrade` again – downloaded packages were reused from the apt cache |
