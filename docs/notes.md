@@ -159,3 +159,16 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 | STP / forward delay | off / 0 – single uplink, no loop possible |
 | VLAN aware | No – Speedport router has no VLAN support (possible future improvement with a managed switch) |
 | Config backup | `configs/network-interfaces` (copy of `/etc/network/interfaces`) |
+
+## Storage
+| Storage | Type | Content | Location | Purpose |
+|---------|------|---------|----------|---------|
+| local | Directory | Backup, Import, ISO image, Container template | /var/lib/vz (root partition, ~72 GB) | Files: ISOs, templates, backups |
+| local-lvm | LVM-Thin | Disk image, Container | Thin pool on the same SSD | VM disks as block devices – thin provisioning + snapshots |
+
+| Item | Value |
+|------|-------|
+| Decision | Kept the default layout – fits a single-disk node, no changes needed |
+| Shared | No – only relevant for network storage in a cluster |
+| Test | Downloaded debian-13.7.0-amd64-netinst.iso via "Download from URL" with SHA-256 verification → "checksum verified", TASK OK |
+| ISO path | /var/lib/vz/template/iso/ |
