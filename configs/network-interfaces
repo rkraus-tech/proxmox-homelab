@@ -1,0 +1,19 @@
+# Proxmox VE host pve01 ? /etc/network/interfaces
+# Snapshot of the working network configuration after installation.
+# nic0 = Intel I219-LM (pinned interface name), vmbr0 = Linux bridge carrying the host IP.
+
+auto lo
+iface lo inet loopback
+
+iface nic0 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+        address 192.168.2.10/24
+        gateway 192.168.2.1
+        bridge-ports nic0
+        bridge-stp off
+        bridge-fd 0
+
+
+source /etc/network/interfaces.d/*

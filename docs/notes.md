@@ -150,3 +150,12 @@ New-Item -ItemType File -Path screenshots\.gitkeep, configs\.gitkeep
 |---------|-------|----------|
 | New kernel not active after upgrade (still 7.0.2-6-pve after 15 days uptime) | Reboot after the kernel update was never performed – a new kernel only loads on boot | Ran pending updates again, then rebooted once to activate the latest kernel |
 | Upgrade aborted after download (`^C` in console) | Ctrl+C sends SIGINT and cancels apt before packages are unpacked | Ran `dpkg --configure -a` (consistency check), then `apt full-upgrade` again – downloaded packages were reused from the apt cache |
+
+## Network Bridge (vmbr0)
+| Item | Value |
+|------|-------|
+| Physical NIC | nic0 (alt. name enp0s31f6), no IP, uplink port of the bridge |
+| Bridge | vmbr0 – Linux bridge, 192.168.2.10/24, gateway 192.168.2.1, autostart |
+| STP / forward delay | off / 0 – single uplink, no loop possible |
+| VLAN aware | No – Speedport router has no VLAN support (possible future improvement with a managed switch) |
+| Config backup | `configs/network-interfaces` (copy of `/etc/network/interfaces`) |
